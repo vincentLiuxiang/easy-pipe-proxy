@@ -72,7 +72,9 @@ In this example,vist http://localhost:3006/ok and vist http://localhost:3006/api
 **errorCode**
 
 ```
-if some error occurs in easy-pipe-proxy, easy-pipe-proxy will append eppCode (easy-pipe-proxy Code) and eppConfig (easy-pipe-proxy Config) to the error object . Connect/express error middleware will capture this error object.  
+if some error occurs in easy-pipe-proxy, 
+easy-pipe-proxy will append eppCode (easy-pipe-proxy Code) and eppConfig (easy-pipe-proxy Config) to the error object . 
+Connect/express error middleware will capture this error object.  
 
 like:
   vist http://localhost:3006/api/pending

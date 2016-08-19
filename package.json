@@ -1,0 +1,24 @@
+{
+  "name": "easy-pipe-proxy",
+  "version": "0.0.1",
+  "description": "http pipe proxy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vincentLiuxiang/easy-pipe-proxy.git"
+  },
+  "keywords": [
+    "http",
+    "proxy",
+    "pipe"
+  ],
+  "author": "liuxiang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vincentLiuxiang/easy-pipe-proxy/issues"
+  },
+  "homepage": "https://github.com/vincentLiuxiang/easy-pipe-proxy#readme"
+}

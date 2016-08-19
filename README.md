@@ -67,7 +67,7 @@ In this example,vist http://localhost:3006/ok and vist http://localhost:3006/api
 
 * host: The back-end service IP or domian
 * port: The back-end service port
-* timeout: pipe-proxy will abort proxy after timeout (mses),and it will cause a timeout err.  
+* timeout: default 2 min. pipe-proxy will abort proxy after timeout (mses),and it will cause a timeout error.  
 
 **errorCode**
 

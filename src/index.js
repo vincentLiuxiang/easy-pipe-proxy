@@ -20,6 +20,8 @@ function Proxy (config) {
     throw new Error('port Can Not Be undefined In Proxy config Parameter');
   }
 
+  config.timeout = parseInt(config.timeout,10) || DEFAULT_TIMEOUT;
+
   this.config = config
 }
 
@@ -49,14 +51,12 @@ Proxy.prototype.pipe = function () {
       }
     })
 
-    var timeout = parseInt(_this.config.timeout,10) || DEFAULT_TIMEOUT;
-
-    proxy.setTimeout(timeout, function () {
+    proxy.setTimeout(_this.config.timeout, function () {
       proxy.abort();
     })
 
     proxy.on('abort',function () {
-      var err = new Error('Pipe Proxy Timeout In ' + timeout + ' msecs');
+      var err = new Error('Pipe Proxy Timeout In ' + _this.config.timeout + ' msecs');
       err.eppCode = EASY_PIPE_PROXY_TIMEOUT_ERROR;
       err.eppConfig = {host:_this.config.host,port:_this.config.port,timeout:_this.config.timeout};
       return next(err);

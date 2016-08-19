@@ -4,6 +4,7 @@ var http = require('http');
  */
 var DEFAULT_TIMEOUT = 2 * 60 * 1000;
 var TIMEOUT_ERROR = 'ECONNRESET';
+var EASY_PIPE_PROXY_ERROR = 'EASYPIPEPROXY'
 
 function Proxy (config) {
   if (Object.prototype.toString.call(config) !== '[object Object]') {
@@ -41,6 +42,7 @@ Proxy.prototype.pipe = function () {
 
     proxy.on('error',function (err) {
       if (err.code !== TIMEOUT_ERROR) {
+        err.eppCode = EASY_PIPE_PROXY_ERROR + '_PIPE';
         return next(err);
       }
     })
@@ -52,7 +54,9 @@ Proxy.prototype.pipe = function () {
     })
 
     proxy.on('abort',function () {
-      return next(new Error('Pipe Proxy Timeout In ' + timeout + ' msecs'));
+      var err = new Error('Pipe Proxy Timeout In ' + timeout + ' msecs');
+      err.eppCode = EASY_PIPE_PROXY_ERROR + '_TIMEOUT';
+      return next(err);
     })
   }
 }

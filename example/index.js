@@ -12,12 +12,16 @@ var proxy = new epp(proxyConfig);
 app.use('/api',proxy.pipe())
 
 app.use('/pending',(req,res,next) => {
+
+})
+
+app.use('/ok',(req,res,next) => {
   res.statusCode = 200;
   res.end('hello world');
 })
 
 app.use(function (err,req,res,next) {
-  console.log(err);
+  console.log(err.eppCode);
 })
 
 app.listen(3006);

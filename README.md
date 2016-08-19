@@ -9,16 +9,18 @@
 npm install easy-pipe-proxy
 ```
 
-### example
+## example
 
-##### connect or express
+### connect or express
+#### proxy layer
+#### proxy.js
 ```
 var app    = require('connect')();
 var epp    = require('easy-pipe-proxy');
 
 var proxyConfig = {
   host:'localhost',
-  port:'3006',
+  port:'3007',
   timeout:1000,
   router:'/api'
 }
@@ -27,27 +29,25 @@ var proxy = new epp(proxyConfig);
 
 /*
 	All requests from the client which req.url start withs '/api',will pipe proxy to 
-	host: localhost, port:3006. 
+	host: localhost, port:3007. 
 */
 
 app.use(proxyConfig.router,proxy.pipe())
 
-/*
-	if A HTTP request from client is 'localhost:3006/api/pending' via any
-	method (GET/POST),
-	easy-pipe-proxy will auto pipe this request to 'localhost:3006/pending',and then pipe
-	the proxy response to client;
-*/
-
-app.use('/pending',(req,res,next) => {
-
+app.use(function (err,req,res,next) {
+  console.log(err.eppCode);
 })
 
-
+app.listen(3006);
+```
+#### back-end service layer
+#### service.js
+```
+var app    = require('connect')();
 /*
 	if A HTTP request from client is 'localhost:3006/api/ok' via any
 	method (GET/POST),
-	easy-pipe-proxy will auto pipe this request to 'localhost:3006/ok',and then pipe
+	easy-pipe-proxy will auto pipe this request to 'localhost:3007/ok',and then pipe
 	the proxy response to client;
 */
 
@@ -56,13 +56,29 @@ app.use('/ok',(req,res,next) => {
   res.end('hello world');
 })
 
-app.use(function (err,req,res,next) {
-  console.log(err.eppCode);
+/*
+	if A HTTP request from client is 'localhost:3006/api/pending' via any
+	method (GET/POST),
+	easy-pipe-proxy will auto pipe this request to 'localhost:3007/pending',and then pipe
+	the proxy response to client;
+*/
+
+app.use('/pending',(req,res,next) => {
+
 })
 
-app.listen(3006);
+app.listen(3007);
 ```
-In this example,vist http://localhost:3006/ok and vist http://localhost:3006/api/ok, will get the same result.
+
+#### start example
+```
+node proxy.js
+node service.js
+```
+vist http://localhost:3006/api/ok
+
+In this example, http://localhost:3007/ok and http://localhost:3006/api/ok will get the same result.
+
 
 **proxyConfig**
 

@@ -13,11 +13,15 @@ function Proxy (config) {
   }
 
   if (!config.host) {
-    throw new Error('host Can Not Be undefined In Proxy config Parameter');
+    throw new Error('host Must Be a String In Proxy config Parameter');
   }
 
   if (!config.port) {
-    throw new Error('port Can Not Be undefined In Proxy config Parameter');
+    throw new Error('port Must Be a Number or a String In Proxy config Parameter');
+  }
+
+  if (!config.router || config.router === '/' ) {
+    throw new Error('router Can Not Be undefined , \'\' , \'/\' In Proxy config Parameter');
   }
 
   config.timeout = parseInt(config.timeout,10) || DEFAULT_TIMEOUT;
@@ -46,7 +50,7 @@ Proxy.prototype.pipe = function () {
     proxy.on('error',function (err) {
       if (err.code !== TIMEOUT_ERROR) {
         err.eppCode = EASY_PIPE_PROXY_ERROR;
-        err.eppConfig = {host:_this.config.host,port:_this.config.port,timeout:_this.config.timeout};
+        err.eppRouter = _this.config.router;
         return next(err);
       }
     })
@@ -58,7 +62,7 @@ Proxy.prototype.pipe = function () {
     proxy.on('abort',function () {
       var err = new Error('Pipe Proxy Timeout In ' + _this.config.timeout + ' msecs');
       err.eppCode = EASY_PIPE_PROXY_TIMEOUT_ERROR;
-      err.eppConfig = {host:_this.config.host,port:_this.config.port,timeout:_this.config.timeout};
+      err.eppRouter = _this.config.router;
       return next(err);
     })
   }

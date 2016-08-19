@@ -3,13 +3,14 @@ var epp    = require('../src');
 
 var proxyConfig = {
   host:'localhost',
-  port:'3007',
-  timeout:1000
+  port:'3006',
+  timeout:1000,
+  router:'/api'
 }
 
 var proxy = new epp(proxyConfig);
 
-app.use('/api',proxy.pipe())
+app.use(proxyConfig.router,proxy.pipe())
 
 app.use('/pending',(req,res,next) => {
 
@@ -21,7 +22,7 @@ app.use('/ok',(req,res,next) => {
 })
 
 app.use(function (err,req,res,next) {
-  console.log(err.eppCode,err.eppConfig);
+  console.log(err.eppCode,err.eppRouter);
 })
 
 app.listen(3006);

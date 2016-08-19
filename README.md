@@ -19,7 +19,8 @@ var epp    = require('easy-pipe-proxy');
 var proxyConfig = {
   host:'localhost',
   port:'3006',
-  timeout:1000
+  timeout:1000,
+  router:'/api'
 }
 
 var proxy = new epp(proxyConfig);
@@ -29,7 +30,7 @@ var proxy = new epp(proxyConfig);
 	host: localhost, port:3006. 
 */
 
-app.use('/api',proxy.pipe())
+app.use(proxyConfig.router,proxy.pipe())
 
 /*
 	if A HTTP request from client is 'localhost:3006/api/pending' via any
@@ -65,25 +66,26 @@ In this example,vist http://localhost:3006/ok and vist http://localhost:3006/api
 
 **proxyConfig**
 
-* host: The back-end service IP or domian
-* port: The back-end service port
-* timeout: default 2 min. pipe-proxy will abort proxy after timeout (mses),and it will cause a timeout error.  
+* host [string]: The back-end service IP or domian
+* port [string/number]: The back-end service port
+* timeout [number]: default 2 min. pipe-proxy will abort proxy after timeout (mses),and it will cause a timeout error. 
+* router [string]: connect's/express's router, this router controls requests which come from the client will be proxy by easy-pipe-proxy.
 
 **errorCode**
 
 ```
 if some error occurs in easy-pipe-proxy, 
-easy-pipe-proxy will append eppCode (easy-pipe-proxy Code) and eppConfig (easy-pipe-proxy Config) to the error object . 
+easy-pipe-proxy will append eppCode (easy-pipe-proxy Code) and eppRouter (easy-pipe-proxy Router) to the error object . 
 Connect/express error middleware will capture this error object.  
 
 like:
   vist http://localhost:3006/api/pending
   
   app.use(function (err,req,res,next) {
-    console.log(err.eppCode,err.eppConfig);
+    console.log(err.eppCode,err.eppRouter);
   })
 
-but if nothing error occurs in easy-pipe-proxy ,the eppCode and eppConfig attribute will be undefined.
+but if nothing error occurs in easy-pipe-proxy ,the eppCode and eppRouter attribute will be undefined.
   
 ```
 **eppCode**
@@ -91,11 +93,9 @@ but if nothing error occurs in easy-pipe-proxy ,the eppCode and eppConfig attrib
 * 408, proxy timeout
 * 500, proxy error
 
-**eppConfig**
+**eppRouter**
 
-* host: The back-end service IP or domian
-* port: The back-end service port
-* timeout : proxy timeout (mses)
+* string,eg: '/api'
 
 
 

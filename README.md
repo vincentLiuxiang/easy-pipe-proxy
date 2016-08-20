@@ -129,6 +129,13 @@ easy-pipe-proxy receives req.headers.host from client should be *'xxx.xxx.xxx.xx
 ```
 	req.headers['X-Proxy-Host'] = req.headers.host;
 	req.headers.host = config.host ;
+	
+	...
+	
+	if (config.port) {
+      option.port = config.port;
+      req.headers.host =  config.host + ':' + config.port;
+    }
 ```
 
 

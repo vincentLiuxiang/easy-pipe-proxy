@@ -16,10 +16,6 @@ function Proxy (config) {
     throw new Error('host Must Be a String In Proxy config Parameter');
   }
 
-  if (!config.port) {
-    throw new Error('port Must Be a Number or a String In Proxy config Parameter');
-  }
-
   if (!config.router || config.router === '/' ) {
     throw new Error('router Can Not Be undefined , \'\' , \'/\' In Proxy config Parameter');
   }
@@ -30,15 +26,25 @@ function Proxy (config) {
 }
 
 Proxy.prototype.pipe = function () {
-  var _this = this;
+  var config = this.config;
+  var abortError = false;
   return function (req,res,next) {
+
+    req.headers['X-Proxy-Host'] = req.headers.host;
+    req.headers.host = config.host ;
+
     var option = {
       method: req.method,
-      headers: req.headers,
       path: req.url,
-      host: _this.config.host,
-      port: _this.config.port
+      host: config.host
     }
+
+    if (config.port) {
+      option.port = config.port;
+      req.headers.host =  config.host + ':' + config.port;
+    }
+
+    option.headers = req.headers;
 
     var proxy = http.request(option,function (resProxy) {
       res.writeHead(resProxy.statusCode,resProxy.headers);
@@ -48,20 +54,20 @@ Proxy.prototype.pipe = function () {
     req.pipe(proxy);
 
     proxy.on('error',function (err) {
-      if (!_this.abortError) {
+      if (!abortError) {
         err.eppCode = EASY_PIPE_PROXY_ERROR;
-        err.eppRouter = _this.config.router;
-        return next(err);
+        err.eppRouter = config.router;
+      } else {
+        abortError = false;
+        err.message = 'Pipe Proxy Timeout In ' + config.timeout + ' msecs';
+        err.eppCode = EASY_PIPE_PROXY_TIMEOUT_ERROR;
+        err.eppRouter = config.router;
       }
-      _this.abortError = false;
-      err.message = 'Pipe Proxy Timeout In ' + _this.config.timeout + ' msecs';
-      err.eppCode = EASY_PIPE_PROXY_TIMEOUT_ERROR;
-      err.eppRouter = _this.config.router;
       return next(err);
     })
 
-    proxy.setTimeout(_this.config.timeout, function () {
-      _this.abortError = true;
+    proxy.setTimeout(config.timeout, function () {
+      abortError = true;
       proxy.abort();
     })
   }

@@ -36,6 +36,8 @@ app.use(proxyConfig.router,proxy.pipe())
 
 app.use(function (err,req,res,next) {
   console.log(err.eppCode,err.eppRouter);
+  res.statusCode = err.eppCode
+  res.end(err.message);
 })
 
 app.listen(3006);
@@ -112,6 +114,24 @@ but if nothing error occurs in easy-pipe-proxy ,the eppCode and eppRouter attrib
 **eppRouter**
 
 * string,eg: '/api'
+
+**proxy header**
+
+* in order to solve some security problems, easy-pipe-proxy will change 
+req.headers.host (which comes from client ) to config.host + ':' + config.port
+
+* eg: if we pipe proxy xxx.xxx.xxx.xxx:3006 to xxx.xxx.xxx.xxx:3007 , 
+and then we vist http://xxx.xxx.xxx.xxx:3006 in browser.
+easy-pipe-proxy receives req.headers.host from client should be *'xxx.xxx.xxx.xxx:3006'* , easy-pipe-proxy will change req.headers.host to *'xxx.xxx.xxx.xxx:3007'* and save *'xxx.xxx.xxx.xxx:3006'* to 'X-Proxy-Host' as a property of req.headers
+
+`code:`
+
+```
+	req.headers['X-Proxy-Host'] = req.headers.host;
+	req.headers.host = config.host ;
+```
+
+
 
 
 

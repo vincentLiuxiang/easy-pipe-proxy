@@ -19,6 +19,8 @@ app.use(proxyConfig.router,proxy.pipe())
 
 app.use(function (err,req,res,next) {
   console.log(err.eppCode,err.eppRouter);
+  res.statusCode = err.eppCode
+  res.end(err.message);
 })
 
 app.listen(3006);

@@ -1,6 +1,6 @@
 {
   "name": "easy-pipe-proxy",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "http pipe proxy",
   "main": "index.js",
   "scripts": {

@@ -26,6 +26,7 @@ var proxyConfig = {
 }
 
 var proxy = new epp(proxyConfig);
+//var proxy2 = new epp(proxyConfig2);
 
 /*
 	All requests from the client which req.url start withs '/api',will pipe proxy to 
@@ -34,10 +35,23 @@ var proxy = new epp(proxyConfig);
 
 app.use(proxyConfig.router,proxy.pipe())
 
+//app.use(proxyConfig2.router,proxy2.pipe())
+
 app.use(function (err,req,res,next) {
-  console.log(err.eppCode,err.eppRouter);
-  res.statusCode = err.eppCode
-  res.end(err.message);
+
+  // err.eppRouter help you distinguish will proxy occur error
+  // if err.eppRouter or err.eppCode is undefined , 
+  // it means nothing error occurs in easy-pipe-proxy
+  
+  console.log(err.code,err.eppCode,err.eppRouter);
+  if (err.eppCode) {
+  	// error occur in easy-pipe-proxy
+	res.statusCode = err.eppCode
+  	res.end(err.message);  	
+  }
+  
+  // other errors
+  //...
 })
 
 app.listen(3006);
@@ -113,7 +127,7 @@ but if nothing error occurs in easy-pipe-proxy ,the eppCode and eppRouter attrib
 
 **eppRouter**
 
-* string,eg: '/api'
+* config.router, eg: '/api', config.router
 
 **proxy header**
 

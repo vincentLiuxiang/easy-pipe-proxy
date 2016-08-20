@@ -1,5 +1,5 @@
 var app    = require('connect')();
-var epp    = require('easy-pipe-proxy');
+var epp    = require('../index.js');
 
 var proxyConfig = {
   host:'localhost',

@@ -35,7 +35,7 @@ var proxy = new epp(proxyConfig);
 app.use(proxyConfig.router,proxy.pipe())
 
 app.use(function (err,req,res,next) {
-  console.log(err.eppCode);
+  console.log(err.eppCode,err.eppRouter);
 })
 
 app.listen(3006);

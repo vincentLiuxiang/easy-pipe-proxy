@@ -48,22 +48,21 @@ Proxy.prototype.pipe = function () {
     req.pipe(proxy);
 
     proxy.on('error',function (err) {
-      if (err.code !== TIMEOUT_ERROR) {
+      if (!_this.abortError) {
         err.eppCode = EASY_PIPE_PROXY_ERROR;
         err.eppRouter = _this.config.router;
         return next(err);
       }
-    })
-
-    proxy.setTimeout(_this.config.timeout, function () {
-      proxy.abort();
-    })
-
-    proxy.on('abort',function () {
-      var err = new Error('Pipe Proxy Timeout In ' + _this.config.timeout + ' msecs');
+      _this.abortError = false;
+      err.message = 'Pipe Proxy Timeout In ' + _this.config.timeout + ' msecs';
       err.eppCode = EASY_PIPE_PROXY_TIMEOUT_ERROR;
       err.eppRouter = _this.config.router;
       return next(err);
+    })
+
+    proxy.setTimeout(_this.config.timeout, function () {
+      _this.abortError = true;
+      proxy.abort();
     })
   }
 }

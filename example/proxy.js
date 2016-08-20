@@ -3,7 +3,7 @@ var epp    = require('../index.js');
 
 var proxyConfig = {
   host:'localhost',
-  port:'3008',
+  port:'3007',
   timeout:1000,
   router:'/api'
 }

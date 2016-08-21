@@ -19,9 +19,9 @@ function Proxy (config) {
   if (!config.router) {
     console.warn(
       '[warning]:\n \
-        We Strongly Recommend That config.router Should Not Be ' + config.router + '. \n \
+        We Strongly Recommend That config.router Should Not Be \'' + config.router + '\'. \n \
         Because, when some errors occur in easy-pipe-proxy, the errRouter \n \
-        (a property in error object which captured in error middleware) will be ' + config.router + '.\n \
+        (a property in error object which captured in error middleware) will be \'' + config.router + '\'.\n \
         That means you can\'t distinguish which proxy occurs error.'
     );
   }

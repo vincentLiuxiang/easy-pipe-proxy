@@ -39,7 +39,7 @@ app.use(proxyConfig.router,proxy.pipe())
 
 app.use(function (err,req,res,next) {
 
-  // err.eppRouter help you distinguish will proxy occur error
+  // err.eppRouter help you distinguish which proxy occurs error
   // if err.eppRouter or err.eppCode is undefined , 
   // it means nothing error occurs in easy-pipe-proxy
   
